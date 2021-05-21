@@ -50,7 +50,7 @@
 #include <cub/util_allocator.cuh>
 #include <cub/device/device_scan.cuh>
 
-#define CUDA_PRINT_ERROR() cudaPrintError(__FILE__, __LINE__)
+#define CUDA_PRINT_ERROR() //cudaPrintError(__FILE__, __LINE__)
 
 // #define DEBUG
 

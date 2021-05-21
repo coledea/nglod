@@ -179,7 +179,7 @@ std::vector<at::Tensor> SPC::SetGeometry(torch::Tensor Octree)
  
     //TODO: share this memory with Points
     torch::Tensor Mortons = torch::zeros({psize}, torch::device(torch::kCUDA).dtype(torch::kInt64));
-    morton_code* Mdata = reinterpret_cast<morton_code*>(Mortons.data_ptr<long>());
+    morton_code* Mdata = reinterpret_cast<morton_code*>(Mortons.data_ptr<int64_t>());
     
     int* pyramid = h_Pyramid;
     int* pyramidSum = h_Pyramid + MAX_LEVELS + 2;

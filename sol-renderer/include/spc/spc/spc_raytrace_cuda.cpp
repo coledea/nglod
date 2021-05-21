@@ -47,6 +47,8 @@
 using namespace std;
 using namespace torch::indexing;
 
+typedef int64_t ulong;
+
 
 extern ulong GetStorageBytes(
   void* d_temp_storage, 
@@ -54,7 +56,7 @@ extern ulong GetStorageBytes(
   uint* d_PrefixSum, 
   uint max_total_points);
 
-extern void generate_primary_rays_cuda(
+extern uint generate_primary_rays_cuda(
   uint imageW, 
   uint imageH, 
   float4x4& nM, 

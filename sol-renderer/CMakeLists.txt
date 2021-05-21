@@ -70,7 +70,7 @@ set_property(TARGET lib_renderer PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 
 target_include_directories(
     lib_renderer PUBLIC
-    /usr/local/cuda/samples/common/inc   
+    "G:/NVIDIA GPU Computing Toolkit/CUDA/v11.3/common/inc"
     ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES} 
 )
 
@@ -116,7 +116,7 @@ add_executable(
 )
 
 set_property(TARGET sdfRenderer PROPERTY CXX_STANDARD 14)
-set_property(TARGET sdfRenderer PROPERTY CUDA_ARCHITECTURES 70)
+set_property(TARGET sdfRenderer PROPERTY CUDA_ARCHITECTURES 86)
 
 target_include_directories(
     sdfRenderer PUBLIC

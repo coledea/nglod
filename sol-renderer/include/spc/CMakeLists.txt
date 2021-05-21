@@ -28,7 +28,7 @@ target_include_directories(
 
 target_include_directories(
     spc SYSTEM PUBLIC
-    /usr/local/cuda/samples/common/inc  
+    "G:/NVIDIA GPU Computing Toolkit/CUDA/v11.3/include/common/inc"  
     ${CMAKE_CUDA_TOOLKIT_INCLUDE_DIRECTORIES}
     ${TORCH_INCLUDE_DIRS}
     ${CNPY_INCLUDE_DIRS}

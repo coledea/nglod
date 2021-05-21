@@ -14,6 +14,6 @@ set_property(TARGET solr PROPERTY CUDA_SEPARABLE_COMPILATION ON)
 
 target_include_directories(
     solr PUBLIC
-    /usr/local/cuda/samples/common/inc    
+    "G:/NVIDIA GPU Computing Toolkit/CUDA/v11.3/include/common/inc"   
 )
 

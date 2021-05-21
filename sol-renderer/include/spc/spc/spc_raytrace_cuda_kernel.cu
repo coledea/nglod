@@ -33,7 +33,9 @@
 #include "spc_math.h"
 
 using namespace std;
-using namespace torch::indexing;  
+using namespace torch::indexing; 
+
+typedef int64_t ulong;
 
 
 __constant__ uint Order[8][8] = {
@@ -63,7 +65,7 @@ d_ScanNodesA(
 
 ulong GetStorageBytes(void* d_temp_storage, uint* d_Info, uint* d_PrefixSum, uint max_total_points)
 {
-    ulong       temp_storage_bytes = 0;
+    size_t       temp_storage_bytes = 0;
     kaolin::cub::DeviceScan::InclusiveSum(d_temp_storage, temp_storage_bytes, d_Info, d_PrefixSum, max_total_points); 
     return temp_storage_bytes;
 }
@@ -222,9 +224,10 @@ uint spc_raytrace_cuda(
     d_Nuggets[1] = d_NuggetBuffers + MAX_TOTAL_POINTS;
 
     int osize = PyramidSum[Level];
+    size_t temp_storage_bytesST = static_cast<size_t>(temp_storage_bytes);
 
     d_ScanNodesA << < (osize + 1023) / 1024, 1024 >> >(osize, d_octree, d_D);
-    kaolin::cub::DeviceScan::ExclusiveSum(d_temp_storage, temp_storage_bytes, d_D, d_S, osize); //NOTE: ExclusiveSum
+    kaolin::cub::DeviceScan::ExclusiveSum(d_temp_storage, temp_storage_bytesST, d_D, d_S, osize); //NOTE: ExclusiveSum
 
     d_InitNuggets << <(num + 1023) / 1024, 1024 >> > (num, d_Nuggets[0]);
 
@@ -237,7 +240,7 @@ uint spc_raytrace_cuda(
     {
         point_data* proot = d_points + PyramidSum[l];
         d_Decide << <(num + 1023) / 1024, 1024 >> > (num, proot, d_Org, d_Dir, d_Nuggets[buffer], d_Info, d_D, l, PyramidSum[l], targetLevel - l);
-        kaolin::cub::DeviceScan::InclusiveSum(d_temp_storage, temp_storage_bytes, d_Info, d_PrefixSum + 1, num);//start sum on second element
+        kaolin::cub::DeviceScan::InclusiveSum(d_temp_storage, temp_storage_bytesST, d_Info, d_PrefixSum + 1, num);//start sum on second element
         cudaMemcpy(&cnt, d_PrefixSum + num, sizeof(uint), cudaMemcpyDeviceToHost);
 
         if (cnt == 0 || cnt > MAX_TOTAL_POINTS) break; // either miss everything, or exceed memory allocation
@@ -291,7 +294,7 @@ uint generate_primary_rays_cuda(uint imageW, uint imageH, float4x4& mM, float3* 
 {
     uint num = imageW*imageH;
 
-    d_generate_rays << <(num + 1023) / 1024, 1024 >> > (num, imageW, imageH, mM, d_Org, d_Dir);
+    d_generate_rays <<<(num + 1023) / 1024, 1024>>> (num, imageW, imageH, mM, d_Org, d_Dir);
 
     return num;
 }
